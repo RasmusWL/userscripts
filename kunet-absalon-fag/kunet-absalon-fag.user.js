@@ -3,13 +3,13 @@
 // @namespace   http://rasmuswriedtlarsen.com
 // @description Edit the links to your Absalon courses on the landing page of KUnet, and have them displayed when the requests fail
 // @include     https://intranet.ku.dk/Sider/default.aspx
-// @version     1.1.3
+// @version     1.2.0
 // @copyright   2012, Rasmus Wriedt Larsen
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_deleteValue
 // @grant       GM_xmlhttpRequest
-// @require     https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js
+// @require     https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js
 // ==/UserScript==
 
 var GM_getSetID = "Absalon_Fag_Whatever";
@@ -23,6 +23,11 @@ var baseCourseURL = "https://pabsws.ku.dk/index.aspx?starturl=main.aspx%26Course
 
 var innerJoin = "#¤%&#";
 var outerJoin = "@#!/=)";
+
+function linksTable()
+{
+    return masterTable.find('tr > td > div > div')
+}
 
 function createObscureFormat(enalbed, URLs, namesNew, namesOld)
 {
@@ -61,11 +66,11 @@ function populateArrays()
 function replace()
 {
     populateArrays();
-    originalHTML = $('.minilisting').html();
+    originalHTML = linksTable().html();
 
     var hasAddedElements = false;
 
-    $('.minilisting tr').each ( function () {
+    linksTable().find('> div').each ( function () {
                 if ( $(this).find('a').length == 0 )
                 {
                     return;
@@ -81,7 +86,7 @@ function replace()
                     linksEnalbled.push( "true" );
                     linksURLs.push( elem.href );
                     linkNamesOld.push(elem.text);
-                    linkNamesNew.push( elem.text.slice( elem.text.indexOf(";")+1 ) );
+                    linkNamesNew.push( elem.text );
 
                     linksToKeepIndex = linksURLs.length -1;
                 }
@@ -95,34 +100,10 @@ function replace()
                     $(this).remove();
                     return;
                 }
-
-                // date formating
-                var jQdateChild = $($(this).children().last());
-                var spanChildren = jQdateChild.children().length != 0;
-                var str;
-                if ( spanChildren )
-                {
-                    str = jQdateChild.children()[0].innerHTML;
-                }
-                else
-                {
-                    str = jQdateChild[0].innerHTML;
-                }
-
-                var newStr = str.slice(0,2) +"/"+str.slice(3,5) + str.slice(10);
-                if ( spanChildren )
-                {
-                    jQdateChild.children()[0].innerHTML = newStr;
-                }
-                else
-                {
-                    jQdateChild[0].innerHTML = newStr;
-                }
         } );
 
 
-    $(".minilisting tr :contains('Fag')").css("width","39%");
-    $(".minilisting").css("padding-bottom", "10px");
+    linksTable().css("padding-bottom", "10px");
 
     if ( hasAddedElements )
     {
@@ -147,7 +128,7 @@ if ( $('nobr :contains("'+kuWorking+'")').length == 1 )
     setTimeout(replace, 0);
 
     afterSettingsUpdateFunction = function(){
-        $('.minilisting').html(originalHTML);
+        linksTable().html(originalHTML);
         replace()
     }
 }
@@ -266,7 +247,7 @@ function addSettings(masterTable)
     function clearSettings() {
         GM_deleteValue(GM_getSetID);
         editClose();
-        $('.minilisting').html(originalHTML);
+        linksTable().html(originalHTML);
         replace();
     }
 
