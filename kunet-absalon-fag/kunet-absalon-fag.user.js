@@ -26,7 +26,7 @@ var outerJoin = "@#!/=)";
 
 function linksTable()
 {
-    return masterTable.find('tr > td > div > div')
+    return masterTable.find('tr > td > div > div > table')
 }
 
 function createObscureFormat(enalbed, URLs, namesNew, namesOld)
@@ -70,7 +70,7 @@ function replace()
 
     var hasAddedElements = false;
 
-    linksTable().find('> div').each ( function () {
+    linksTable().find('tr').each ( function () {
                 if ( $(this).find('a').length == 0 )
                 {
                     return;
@@ -83,10 +83,17 @@ function replace()
                 {
                     hasAddedElements = true;
 
+                    newname = elem.text;
+
+                    if (newname.indexOf(";") != -1 && newname.indexOf(";") < 13) {
+                        newname = newname.split(";").slice(1).join(";")
+                    }
+
+
                     linksEnalbled.push( "true" );
                     linksURLs.push( elem.href );
                     linkNamesOld.push(elem.text);
-                    linkNamesNew.push( elem.text );
+                    linkNamesNew.push(newname);
 
                     linksToKeepIndex = linksURLs.length -1;
                 }
