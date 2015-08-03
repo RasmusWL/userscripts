@@ -3,7 +3,7 @@
 // @namespace   http://rasmuswriedtlarsen.com
 // @description Edit the links to your Absalon courses on the landing page of KUnet, and have them displayed when the requests fail
 // @include     https://intranet.ku.dk/Sider/default.aspx
-// @version     1.2.0
+// @version     1.2.1
 // @copyright   2012, Rasmus Wriedt Larsen
 // @grant       GM_getValue
 // @grant       GM_setValue
